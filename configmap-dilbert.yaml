@@ -1,0 +1,22 @@
+# dilbert
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dilbert
+  namespace: dilbert
+data:
+  dilbert.passowrd: '***********'
+  aws.profile: '***********'
+  aws.access_key_id: '***********'
+  aws.secret_access_key: '***********'
+  aws.region: '***********'
+  aws.output: '***********'
+  aws.bucket: '***********'
+  aws.accountid: '***********'
+  hubot.token: '***********'
+  slack.channel: '***********'
+  cloudhealth.key: '***********'
+  opsgenie.schedule: '***********'
+  opsgenie.key: '************'
+  openshift.token: '***********'
+  openshift.url: '***********'

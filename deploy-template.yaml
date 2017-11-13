@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    description: Defines how to deploy the application server
+  name: %env%
+spec:
+  replicas: 1
+  selector:
+    name: %env%
+  strategy:
+    recreateParams: null
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        name: %env%
+      name: %env%
+    spec:
+      containers:
+        - env:
+            - name: DILBERT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: dilbert.passowrd       
+            - name: AWS_PROFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: aws.profile  
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: aws.access_key_id 
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: aws.secret_access_key                                          
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: aws.region
+            - name: AWS_OUTPUT
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: aws.output
+            - name: AWS_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: aws.bucket
+            - name: AWS_ACCOUNT
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: aws.accountid
+            - name: HUBOT_SLACK_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: hubot.token  
+            - name: SLACK_CHANNEL
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: slack.channel  
+            - name: CLOUDHEALTH_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: cloudhealth.key                                                                                                                      
+            - name: OPSGENIE_SCHEDULE
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: opsgenie.schedule   
+            - name: OPSGENIE_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: opsgenie.key                    
+            - name: OPENSHIFT_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: openshift.token        
+            - name: OPENSHIFT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: %env%
+                  key: openshift.url    
+            - name: HOME
+              value: '/tmp'    
+            - name: IMAGE_VERSION
+              value: '%imageversion%'        
+            - name: RELEASE_NUMBER
+              value: 'CICD'                           
+          image: 'dilbert:%buildversion%'
+          name: %env%
+          command: [ '/dilbert/bin/start.sh' ]
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: 512Mi
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+          automatic: true
+          containerNames:
+            - %env%
+          from:
+            kind: ImageStreamTag
+            name: 'dilbert:%buildversion%'
+    - type: ConfigChange

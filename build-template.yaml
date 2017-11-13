@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: dilbert
+  namespace: dilbert
+  labels:
+    app: dilbert
+  annotations:
+    description: DevOps Bot
+spec:
+  triggers:
+    - type: ConfigChange
+  source:
+    type: Git
+    git:
+      uri: 'http://github.com/dilbert.git'
+      ref: master
+    sourceSecret:
+      name: openshift-bot-stash          
+  strategy:
+    type: Docker
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        name: 'ubuntu:latest'
+      dockerfilePath: MyDockerfile     
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'dilbert:%buildversion%'
+    pushSecret:
+      name: builder-dockercfg-w3dn0      
+
